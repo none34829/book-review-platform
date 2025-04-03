@@ -14,12 +14,12 @@ const BookDetail = () => {
   const [editingReview, setEditingReview] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
   
-  // For simplicity, we're using a fixed user in this demo
-  // In a real app, this would come from an auth context
+  // just hardcoding user for this demo lol
+  // would be from auth context if this was a real app
   const isAuthenticated = true; 
   const currentUserId = 2; // user1's ID is 2 in the database, not 1
 
-  // Ensure we have an auth token before submitting reviews
+  // making sure we got auth token before we submit reviews
   useEffect(() => {
     const getAuthToken = async () => {
       if (!localStorage.getItem('token')) {
@@ -45,7 +45,7 @@ const BookDetail = () => {
     getAuthToken();
   }, []);
 
-  // Fetch book details
+  // getting book details from api
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
@@ -69,12 +69,12 @@ const BookDetail = () => {
     fetchBookDetails();
   }, [id]);
 
-  // Handle review submission (create/update)
+  // handling review submission (create/update)
   const handleReviewSubmit = async (reviewData) => {
     try {
       console.log('Starting review submission with data:', reviewData);
       
-      // Ensure we have auth token
+      // gotta have a token for this
       if (!localStorage.getItem('token')) {
         const authResponse = await authApi.login();
         localStorage.setItem('token', authResponse.data.token);
@@ -82,21 +82,21 @@ const BookDetail = () => {
       
       let response;
       if (editingReview) {
-        // Update existing review
+        // editing existing one
         console.log(`Updating review ID ${editingReview.id}`);
         response = await reviewsApi.update(editingReview.id, reviewData);
       } else {
-        // Create new review
+        // making a new one
         console.log('Creating new review');
         response = await reviewsApi.create(reviewData);
       }
       
       console.log('Review API response:', response);
       
-      // Force a delay to ensure backend processing is complete
+      // small delay so backend catches up
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Refresh book data to show the new/updated review
+      // get fresh book data to show the new review
       console.log('Fetching updated book data...');
       const bookResponse = await booksApi.getById(id);
       console.log('Updated book data:', bookResponse.data);
@@ -105,23 +105,23 @@ const BookDetail = () => {
       }
       setBook(bookResponse.data);
       
-      // Reset form state
+      // close form
       setShowReviewForm(false);
       setEditingReview(null);
     } catch (err) {
       console.error('Error in handleReviewSubmit:', err);
       console.error('Error response:', err.response?.data);
-      throw err; // Let the form component handle the error
+      throw err; // let ReviewForm handle the error
     }
   };
 
-  // Handle review deletion
+  // handling review deletion
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm('Are you sure you want to delete this review?')) {
       try {
         await reviewsApi.delete(reviewId);
         
-        // Refresh book data
+        // fresh data plz
         const response = await booksApi.getById(id);
         setBook(response.data);
       } catch (err) {
@@ -131,22 +131,22 @@ const BookDetail = () => {
     }
   };
 
-  // Handle review edit
+  // when someone wants to edit their review
   const handleEditReview = (review) => {
     setEditingReview(review);
     setShowReviewForm(true);
   };
 
-  // Cancel review edit/creation
+  // cancel the edit/new review form
   const handleCancelReview = () => {
     setShowReviewForm(false);
     setEditingReview(null);
   };
 
-  // Check if current user has already reviewed this book
+  // check if current user already left a review
   const hasUserReviewed = book?.reviews.some(review => review.user.id === currentUserId);
 
-  // Add a refresh function
+  // manual refresh button functionality
   const handleRefresh = async () => {
     try {
       setLoading(true);
@@ -219,7 +219,7 @@ const BookDetail = () => {
               
               <Card.Text>
                 This is where a book description would go. Since our API doesn't provide one,
-                this is a placeholder.
+                this is a placeholder. In a real application, you would display the book description here.
               </Card.Text>
             </Card.Body>
           </Card>

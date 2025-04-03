@@ -20,7 +20,7 @@ const BookList = () => {
         const response = await booksApi.getAll(params);
         setBooks(response.data);
         
-        // Extract unique genres from books
+        // grab all the different genres from the books
         const uniqueGenres = [...new Set(response.data.map(book => book.genre))];
         setGenres(uniqueGenres);
       } catch (err) {
@@ -34,7 +34,7 @@ const BookList = () => {
     fetchBooks();
   }, [searchTerm]);
 
-  // Filter books by genre if a genre is selected
+  // show only books matching the selected genre
   const filteredBooks = genre 
     ? books.filter(book => book.genre === genre) 
     : books;

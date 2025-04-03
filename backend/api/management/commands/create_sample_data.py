@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Creating sample data...')
         
-        # Create sample books
+        # adding some cool books ppl might like
         books_data = [
             {
                 'title': 'To Kill a Mockingbird',
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(f'Book already exists: {book.title}')
         
-        # Create sample users if they don't exist
+        # gotta make some fake users lol
         users = []
         for i in range(1, 5):
             username = f'user{i}'
@@ -75,19 +75,41 @@ class Command(BaseCommand):
                 self.stdout.write(f'User already exists: {username}')
             users.append(user)
         
-        # Create sample reviews
+        # Sample review templates - more natural, human-like comments
+        review_templates = [
+            "loved it! definitely recommend to anyone who enjoys {genre}",
+            "omg this book was sooo good!! couldn't put it down",
+            "tbh not what i expected... kinda disappointing :(",
+            "took me a while to get into it but the ending was worth it",
+            "meh, it was ok. nothing special",
+            "AMAZING book!!! one of my all-time favs",
+            "not bad, but I've read better. the characters were kinda flat",
+            "pretty good read for a rainy weekend. 👍",
+            "liked the story but hated the main character... so annoying",
+            "honestly? overrated. don't get why everyone loves it so much",
+            "read this in one sitting! absolutely incredible",
+            "just finished it last night and i'm still thinking about it",
+            "slow start but gets better. stick with it",
+            "can't believe i waited so long to read this!",
+            "ugh the writing style was not for me. gave up halfway"
+        ]
+        
+        # now let's add some reviews from ppl
         for book in books:
             for user in users:
-                # Skip some reviews randomly
+                # nah skip some randomly cuz not everyone reviews everything
                 if random.random() < 0.3:
                     continue
                     
+                # Pick a random review template and fill in the genre
+                comment = random.choice(review_templates).replace('{genre}', book.genre.lower())
+                
                 review, created = Review.objects.get_or_create(
                     book=book,
                     user=user,
                     defaults={
                         'rating': random.randint(1, 5),
-                        'comment': f'This is a sample review for {book.title} by {user.username}.'
+                        'comment': comment
                     }
                 )
                 if created:

@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Book, Review
 from .serializers import BookSerializer, ReviewSerializer
 
-# Create your views here.
-
+# stuff for views goes here
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -46,7 +45,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         book_id = self.request.data.get('book')
         book = get_object_or_404(Book, id=book_id)
         
-        # Check if user already has a review for this book
+        # hmm let's check if u already reviewed this book
         existing_review = Review.objects.filter(book=book, user=self.request.user).first()
         if existing_review:
             return Response(

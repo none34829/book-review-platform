@@ -8,7 +8,7 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Reset form when review prop changes
+  // reset the form when switching between add/edit modes
   useEffect(() => {
     if (review) {
       setRating(review.rating);
@@ -22,7 +22,7 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate input
+    // check if comment is empty
     if (!comment.trim()) {
       setError('Please provide a comment for your review.');
       return;
@@ -32,7 +32,7 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
     setError('');
     
     try {
-      // Ensure we're authenticated first
+      // make sure we're logged in first
       if (!localStorage.getItem('token')) {
         try {
           console.log('Attempting to authenticate before submitting review...');
@@ -51,12 +51,12 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
         }
       }
       
-      // Now submit the review
+      // put together the review data
       const reviewData = {
-        rating: parseInt(rating, 10), // Ensure rating is an integer
+        rating: parseInt(rating, 10), // make sure rating is a number
         comment: comment.trim(),
-        book: parseInt(bookId, 10), // Ensure book ID is an integer
-        user_id: 2, // Use ID 2 which corresponds to user1 in the database
+        book: parseInt(bookId, 10), // make sure book ID is a number
+        user_id: 2, // use ID 2 which corresponds to user1 in the database
       };
       
       console.log('Submitting review data:', reviewData);

@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { Card, Button } from 'react-bootstrap';
 
 const ReviewCard = ({ review, onEdit, onDelete, canModify }) => {
-  // Debug the review object
+  // print review details for debugging
   useEffect(() => {
     console.log('ReviewCard received review:', review);
   }, [review]);
 
-  // Helper function to render stars
+  // showing stars for the rating
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -20,7 +20,7 @@ const ReviewCard = ({ review, onEdit, onDelete, canModify }) => {
     return stars;
   };
 
-  // Format date
+  // make the date look pretty
   const formatDate = (dateString) => {
     if (!dateString) return 'Unknown date';
     try {
@@ -32,7 +32,7 @@ const ReviewCard = ({ review, onEdit, onDelete, canModify }) => {
     }
   };
   
-  // Check if review or user is undefined
+  // oops no review data, show an error
   if (!review || !review.user) {
     console.error('Invalid review object:', review);
     return (
