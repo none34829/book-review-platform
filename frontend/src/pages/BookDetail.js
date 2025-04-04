@@ -144,7 +144,9 @@ const BookDetail = () => {
   };
 
   // check if current user already left a review
-  const hasUserReviewed = book?.reviews.some(review => review.user.id === currentUserId);
+  const hasUserReviewed = book?.reviews.some(review => 
+    review.user?.id === currentUserId && !review.is_auto_generated
+  );
 
   // manual refresh button functionality
   const handleRefresh = async () => {
@@ -164,6 +166,22 @@ const BookDetail = () => {
       setLoading(false);
     }
   };
+
+  // Get book description if available
+  const getBookDescription = () => {
+    if (book?.description) {
+      return book.description;
+    }
+    return "This is where a book description would go. Since our API doesn't provide one, this is a placeholder. In a real application, you would display the book description here.";
+  };
+
+  // Create a safe HTML object for rendering the description
+  const createMarkup = (htmlContent) => {
+    return { __html: htmlContent };
+  };
+
+  // Default placeholder image when no cover is available
+  const defaultCoverImage = 'https://via.placeholder.com/300x450/e9ecef/495057?text=No+Cover';
 
   if (loading || authLoading) {
     return (
@@ -203,24 +221,38 @@ const BookDetail = () => {
         <Col md={8}>
           <Card className="shadow-sm">
             <Card.Body>
-              <Card.Title as="h1">{book.title}</Card.Title>
-              <Card.Subtitle className="mb-3 text-muted">by {book.author}</Card.Subtitle>
-              
-              <div className="mb-3">
-                <Badge bg="secondary" className="me-2">{book.genre}</Badge>
-                <Badge bg="info">Published: {book.published_year}</Badge>
-                {book.average_rating > 0 && (
-                  <Badge bg="warning" text="dark" className="ms-2">
-                    <i className="bi bi-star-fill me-1"></i>
-                    {book.average_rating.toFixed(1)}
-                  </Badge>
-                )}
-              </div>
-              
-              <Card.Text>
-                This is where a book description would go. Since our API doesn't provide one,
-                this is a placeholder. In a real application, you would display the book description here.
-              </Card.Text>
+              <Row>
+                <Col md={4} className="text-center mb-3 mb-md-0">
+                  <img
+                    src={book.coverImage || defaultCoverImage}
+                    alt={`${book.title} cover`}
+                    style={{ 
+                      maxHeight: '300px', 
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                    }}
+                    className="mb-3"
+                  />
+                </Col>
+                <Col md={8}>
+                  <Card.Title as="h1">{book.title}</Card.Title>
+                  <Card.Subtitle className="mb-3 text-muted">by {book.author}</Card.Subtitle>
+                  
+                  <div className="mb-3">
+                    <Badge bg="secondary" className="me-2">{book.genre}</Badge>
+                    <Badge bg="info">Published: {book.published_year}</Badge>
+                    {book.average_rating > 0 && (
+                      <Badge bg="warning" text="dark" className="ms-2">
+                        <i className="bi bi-star-fill me-1"></i>
+                        {book.average_rating.toFixed(1)}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <Card.Text dangerouslySetInnerHTML={createMarkup(getBookDescription())} />
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
           

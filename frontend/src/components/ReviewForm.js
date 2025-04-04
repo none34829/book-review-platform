@@ -55,8 +55,8 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
       const reviewData = {
         rating: parseInt(rating, 10), // make sure rating is a number
         comment: comment.trim(),
-        book: parseInt(bookId, 10), // make sure book ID is a number
-        user_id: 2, // use ID 2 which corresponds to user1 in the database
+        book: bookId, // pass the book ID as is
+        user_id: 2, // use ID 2 which corresponds to user1
       };
       
       console.log('Submitting review data:', reviewData);
@@ -65,7 +65,7 @@ const ReviewForm = ({ bookId, review, onSubmit, onCancel }) => {
       setComment('');
     } catch (err) {
       console.error('Error saving review:', err);
-      setError(`An error occurred: ${err.message || 'Unknown error'}. Make sure the backend server is running at http://127.0.0.1:8000.`);
+      setError(`An error occurred: ${err.message || 'Unknown error'}.`);
     } finally {
       setSubmitting(false);
     }

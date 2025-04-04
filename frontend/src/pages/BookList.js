@@ -18,10 +18,16 @@ const BookList = () => {
         const params = {};
         if (searchTerm) params.search = searchTerm;
         const response = await booksApi.getAll(params);
+        
+        // Check if we have valid data
+        if (!response.data || !Array.isArray(response.data)) {
+          throw new Error('Invalid data format received from API');
+        }
+        
         setBooks(response.data);
         
         // grab all the different genres from the books
-        const uniqueGenres = [...new Set(response.data.map(book => book.genre))];
+        const uniqueGenres = [...new Set(response.data.map(book => book.genre).filter(Boolean))];
         setGenres(uniqueGenres);
       } catch (err) {
         console.error('Error fetching books:', err);
@@ -31,7 +37,12 @@ const BookList = () => {
       }
     };
 
-    fetchBooks();
+    // Debounce search to avoid excessive API calls
+    const timeoutId = setTimeout(() => {
+      fetchBooks();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
   // show only books matching the selected genre
