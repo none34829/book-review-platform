@@ -1,0 +1,12 @@
+[build]
+  # Directory to publish
+  publish = "build"
+  
+[build.environment]
+  NODE_VERSION = "16"
+
+# Handle SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
